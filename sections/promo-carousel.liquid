@@ -1,0 +1,179 @@
+{%- liquid
+  assign s = section.settings
+  assign cards = s.cards
+-%}
+
+<section
+  class="bg-white pt-9 pb-9 pl-6 md:pl-10 xl:pt-20 xl:pb-20 xl:pl-20"
+  {{ section.shopify_attributes }}
+>
+  {%- if s.heading != blank or s.description != blank or s.cta_label != blank -%}
+    <div class="flex flex-col items-start gap-4 pr-6 md:pr-10 xl:flex-row xl:items-end xl:justify-between xl:gap-10 xl:pr-20">
+      <div class="flex max-w-[62.8125rem] flex-col gap-4">
+        {%- if s.heading != blank -%}
+          <h2 class="font-display text-heading-md-m xl:text-heading-md text-char font-medium">
+            {{ s.heading }}
+          </h2>
+        {%- endif -%}
+        {%- if s.description != blank -%}
+          <p class="font-body text-body-md-m xl:text-body-md text-char max-w-[39.375rem]">
+            {{ s.description }}
+          </p>
+        {%- endif -%}
+      </div>
+
+      {%- if s.cta_label != blank -%}
+        <a
+          class="border-char text-char font-display text-button focus-visible:outline-char tap-target inline-flex h-12.5 shrink-0 items-center justify-center rounded-lg border px-6 font-semibold transition hover:bg-char hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 xl:h-15 xl:rounded-field xl:px-8"
+          href="{{ s.cta_link | default: '#' }}"
+        >
+          {{ s.cta_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if cards.size > 0 -%}
+    {%- liquid
+      assign scroller_id = 'promo-scroller-' | append: section.id
+      assign group_label = s.heading | default: 'Featured promos'
+    -%}
+    <div
+      class="mt-6 flex flex-col gap-6 xl:mt-9 xl:gap-8"
+      x-data="promoCarousel"
+      role="group"
+      aria-roledescription="{{ 'sections.promo_carousel.carousel' | t }}"
+      aria-label="{{ group_label | escape }}"
+    >
+      <div class="relative">
+        <ul
+          class="scrollbar-none focus-visible:outline-char flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pr-6 focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:scroll-auto md:pr-10 xl:pr-20"
+          id="{{ scroller_id }}"
+          data-promo-scroller
+          role="list"
+          tabindex="0"
+          aria-label="{{ group_label | escape }}"
+          x-on:keydown="onKey($event)"
+        >
+          {%- for card in cards -%}
+            {% render 'promo-card', card: card, position: forloop.index, total: forloop.length %}
+          {%- endfor -%}
+        </ul>
+
+        <div
+          class="pointer-events-none absolute inset-y-0 right-0 hidden w-[225px] bg-gradient-to-l from-white to-transparent xl:block"
+          aria-hidden="true"
+        ></div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <button
+          class="focus-visible:outline-char inline-flex size-11 shrink-0 items-center justify-center rounded-full transition disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-4"
+          type="button"
+          aria-controls="{{ scroller_id }}"
+          x-bind:disabled="atStart"
+          x-on:click="step(-1)"
+        >
+          <img
+            class="block size-11 rotate-180"
+            src="{{ 'promo-nav-arrow.svg' | asset_url }}"
+            alt=""
+            width="44"
+            height="44"
+            aria-hidden="true"
+          >
+          <span class="sr-only">
+            {{- s.previous_label | default: 'Previous promos' -}}
+          </span>
+        </button>
+
+        <button
+          class="focus-visible:outline-char inline-flex size-11 shrink-0 items-center justify-center rounded-full transition disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-4"
+          type="button"
+          aria-controls="{{ scroller_id }}"
+          x-bind:disabled="atEnd"
+          x-on:click="step(1)"
+        >
+          <img
+            class="block size-11"
+            src="{{ 'promo-nav-arrow.svg' | asset_url }}"
+            alt=""
+            width="44"
+            height="44"
+            aria-hidden="true"
+          >
+          <span class="sr-only">
+            {{- s.next_label | default: 'Next promos' -}}
+          </span>
+        </button>
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Promo carousel",
+  "class": "promo-carousel-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Learn, Grow and Thrive"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "info": "Leave empty to hide the button.",
+      "default": "Explore The Education Center"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Cards"
+    },
+    {
+      "type": "metaobject_list",
+      "id": "cards",
+      "label": "Cards",
+      "metaobject_type": "promo_card",
+      "limit": 12,
+      "info": "Pick the cards to show and drag to reorder. Create and edit the cards themselves in Content → Metaobjects."
+    },
+    {
+      "type": "header",
+      "content": "Button labels"
+    },
+    {
+      "type": "text",
+      "id": "previous_label",
+      "label": "Previous button label",
+      "info": "Read by screen readers. The button itself shows only the arrow.",
+      "default": "Previous promos"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Next button label",
+      "info": "Read by screen readers. The button itself shows only the arrow.",
+      "default": "Next promos"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promo carousel"
+    }
+  ]
+}
+{% endschema %}

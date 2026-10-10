@@ -1,0 +1,37 @@
+{
+  "sections": {
+    "t-default": {
+      "type": "testimonial",
+      "settings": {
+        "testimonial": "shabsai-u",
+        "heading": "From our community",
+        "background": "orange",
+        "show_decorations": true,
+        "padding_top": 0,
+        "padding_bottom": 112
+      }
+    },
+    "promos": {
+      "type": "promo-carousel",
+      "settings": {
+        "heading": "Learn, Grow and Thrive",
+        "description": "From budgeting tips to credit-building advice, we\u2019re here to help you make smart financial decisions with confidence.",
+        "cta_label": "Explore The Education Center",
+        "cta_link": "#",
+        "previous_label": "Previous promos",
+        "next_label": "Next promos",
+        "cards": [
+          "how-to-choose-the-right-bank-account",
+          "tips-for-building-an-emergency-fund",
+          "checking-vs-savings-explained",
+          "how-certificate-accounts-work",
+          "how-to-choose-the-right-bank-account-1"
+        ]
+      }
+    }
+  },
+  "order": [
+    "promos",
+    "t-default"
+  ]
+}

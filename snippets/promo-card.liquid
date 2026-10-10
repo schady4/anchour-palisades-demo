@@ -1,0 +1,88 @@
+{%- liquid
+  assign title = card.title.value
+  assign image = card.image.value
+  assign link_field = card.url.value | default: card.link.value
+
+  if link_field.url
+    assign link = link_field.url
+  else
+    assign link = link_field
+  endif
+
+  case card.accent.value
+    when 'green'
+      assign arrow = 'promo-arrow-green.svg'
+      assign placeholder = 'bg-neighborhood'
+    when 'lilac'
+      assign arrow = 'promo-arrow-lilac.svg'
+      assign placeholder = 'bg-lilac'
+    else
+      assign arrow = 'promo-arrow-orange.svg'
+      assign placeholder = 'bg-local-orange'
+  endcase
+
+  if link != blank
+    assign wrapper = 'a'
+  else
+    assign wrapper = 'div'
+  endif
+-%}
+
+{%- if title != blank or image != blank -%}
+  <li
+    class="w-[281px] shrink-0 snap-start md:w-[320px] xl:w-[381px]"
+    data-promo-card
+    role="group"
+    aria-roledescription="{{ 'sections.promo_carousel.slide' | t }}"
+    aria-label="{{ 'sections.promo_carousel.slide_position' | t: index: position, total: total }}"
+  >
+    <{{ wrapper }}
+      class="group focus-visible:outline-char relative flex aspect-[381/392] flex-col justify-end overflow-hidden rounded-lg p-3 focus-visible:outline-2 focus-visible:outline-offset-4 xl:rounded-card xl:p-4"
+      {% if link != blank %}
+        href="{{ link }}"
+        {% if title == blank %}aria-label="{{ 'sections.promo_carousel.untitled' | t }}"{% endif %}
+      {% endif %}
+    >
+      {%- if image != blank -%}
+        {{
+          image
+          | image_url: width: 762
+          | image_tag:
+            widths: '281, 320, 381, 562, 640, 762',
+            sizes: '(min-width: 1280px) 381px, (min-width: 768px) 320px, 281px',
+            width: 381,
+            height: 392,
+            alt: '',
+            class: 'absolute inset-0 size-full object-cover',
+            loading: 'lazy',
+            draggable: 'false'
+        }}
+      {%- else -%}
+        <div class="{{ placeholder }} absolute inset-0" aria-hidden="true"></div>
+      {%- endif -%}
+
+      {%- if title != blank -%}
+        <div
+          class="bg-shore relative flex items-center justify-between gap-3 rounded-lg p-3 xl:items-start xl:rounded-field xl:p-4"
+          data-promo-text
+        >
+          <span class="font-display text-heading-xxs-m xl:text-heading-xxs text-char font-medium group-hover:underline">
+            {{ title }}
+          </span>
+          {%- if link != blank -%}
+            <img
+            class="block size-[34px] shrink-0 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none xl:size-8"
+            src="{{ arrow | asset_url }}"
+            alt=""
+            draggable="false"
+            width="32"
+            height="32"
+              loading="lazy"
+              aria-hidden="true"
+            >
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </{{ wrapper }}>
+  </li>
+{%- endif -%}
