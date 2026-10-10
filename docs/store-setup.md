@@ -29,14 +29,18 @@ instead. **No handle is hardcoded.**
 | Handle | Items |
 | --- | --- |
 | `footer-bank` | Checking · Savings · Certificate Accounts · Money Market · IRA · Youth Accounts |
-| `footer-borrow` | Credit Cards · Mortgages · Home Equity Loans · Auto Loans · Recreational Loans · Personal Loans · Student Loans |
-| `footer-services` | Courtesy Pay · Digital Banking · Palisades Perks · Refer-a-Friend · Family Security Plan · EasyPay · Skip-a-Pay |
-| `footer-about` | About Us · Community · Careers · Locations · Contact Us |
-| `footer-resources` | FAQs · Education Center · Blog · Publications |
-| `footer-legal` | Privacy & Security · Legal Disclaimer · Accessibility · Website Privacy |
+| `borrow` | Credit Cards · Mortgages · Home Equity Loans · Auto Loans · Recreational Loans · Personal Loans · Student Loans |
+| `services` | Courtesy Pay · Digital Banking · Palisades Perks · Refer-a-Friend · Family Security Plan · EasyPay · Skip-a-Pay |
+| `about` | About Us · Community · Careers · Locations · Contact Us |
+| `resources` | FAQs · Education Center · Blog · Publications |
+| `legal` | Privacy & Security · Legal Disclaimer · Accessibility · Website Privacy |
 
 Two things to know. Shopify builds a menu's handle from its title once, when it's
-created, and renaming it later doesn't change the handle. And the links point at
+created, and renaming it later doesn't change the handle. That is why the first
+handle reads `footer-bank` and the rest are bare words: the menus were renamed
+after I made them, and the handles stayed where they started. Matching the table
+above is what makes the footer work on arrival, but any handle works if you pick
+the menu yourself in the theme editor. And the links point at
 the home page rather than `#`, because Shopify requires a valid destination and
 rejects a bare fragment.
 
