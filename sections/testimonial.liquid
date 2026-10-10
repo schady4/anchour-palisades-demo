@@ -1,0 +1,135 @@
+{%- liquid
+  assign s = section.settings
+  assign entry = s.testimonial
+
+  assign quote = entry.quote.value
+  assign author_name = entry.author_name.value
+  assign author_detail = entry.author_detail.value
+
+  assign rating = entry.rating.value | plus: 0
+  if rating > 5
+    assign rating = 5
+  endif
+
+  case s.background
+    when 'green'
+      assign surface = 'bg-neighborhood'
+    when 'shore'
+      assign surface = 'bg-shore'
+    else
+      assign surface = 'bg-light-local-orange'
+  endcase
+-%}
+
+{%- if quote != blank -%}
+  <section
+    class="px-6 pt-(--section-pt) pb-(--section-pb) md:px-10 xl:px-gutter xl:pt-(--section-pt-lg) xl:pb-(--section-pb-lg)"
+    style="--section-pt-lg: {{ s.padding_top }}px; --section-pb-lg: {{ s.padding_bottom }}px; --section-pt: {{ s.padding_top | times: 32 | plus: 50 | divided_by: 100 }}px; --section-pb: {{ s.padding_bottom | times: 32 | plus: 50 | divided_by: 100 }}px;"
+    {{ section.shopify_attributes }}
+  >
+    <div class="{{ surface }} text-char relative mx-auto grid w-full max-w-site justify-items-center gap-6 overflow-clip rounded-panel px-6 py-30 xl:gap-12 xl:rounded-card">
+      {%- if s.show_decorations -%}
+        {% render 'testimonial-decorations' %}
+      {%- endif -%}
+
+      {%- if s.heading != blank -%}
+        <h2 class="font-display text-section-m xl:text-section relative text-center font-semibold uppercase">
+          {{ s.heading }}
+        </h2>
+      {%- endif -%}
+
+      <div class="relative grid justify-items-center gap-8 xl:gap-12">
+        <div class="grid justify-items-center gap-4">
+          {%- if rating > 0 -%}
+            {% render 'testimonial-rating', rating: rating %}
+          {%- endif -%}
+
+          <blockquote class="font-body text-quote-m xl:text-quote max-w-[20rem] text-center text-balance md:max-w-[44rem] xl:max-w-[65.25rem]">
+            {{ quote }}
+          </blockquote>
+        </div>
+
+        {%- if author_name != blank or author_detail != blank -%}
+          <p class="font-display text-section-s-m xl:text-section-s xl:text-slate text-center font-semibold uppercase">
+            {%- if author_name != blank -%}{{ author_name }}{%- endif -%}
+            {%- if author_name != blank and author_detail != blank -%}
+              <span class="mx-2" aria-hidden="true">|</span>
+            {%- endif -%}
+            {%- if author_detail != blank -%}{{ author_detail }}{%- endif -%}
+          </p>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Testimonial",
+  "class": "testimonial-section",
+  "settings": [
+    {
+      "type": "metaobject",
+      "id": "testimonial",
+      "label": "Testimonial",
+      "metaobject_type": "testimonial",
+      "info": "Manage the quote, rating and attribution in Content → Metaobjects. The section is hidden until one is chosen."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section label",
+      "info": "Small uppercase line above the quote. Leave empty to hide it.",
+      "default": "From our community"
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "options": [
+        { "value": "orange", "label": "Light Local Orange" },
+        { "value": "green", "label": "Neighborhood Green" },
+        { "value": "shore", "label": "Shore" }
+      ],
+      "default": "orange"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Space above",
+      "unit": "px",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "info": "Measured at desktop. Mobile uses roughly a third, matching the design.",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Space below",
+      "unit": "px",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "default": 112
+    },
+    {
+      "type": "checkbox",
+      "id": "show_decorations",
+      "label": "Show decorative artwork",
+      "info": "The asterisks and trees. Hidden from screen readers either way.",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonial"
+    }
+  ]
+}
+{% endschema %}

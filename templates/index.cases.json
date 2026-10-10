@@ -1,0 +1,54 @@
+{
+  "sections": {
+    "t-default": {
+      "type": "testimonial",
+      "settings": {
+        "testimonial": "shabsai-u",
+        "heading": "From our community",
+        "background": "orange",
+        "show_decorations": true,
+        "padding_top": 0,
+        "padding_bottom": 112
+      }
+    },
+    "t-short": {
+      "type": "testimonial",
+      "settings": {
+        "testimonial": "short-quote",
+        "heading": "Short quote, 4 of 5",
+        "background": "orange",
+        "show_decorations": true,
+        "padding_top": 0,
+        "padding_bottom": 112
+      }
+    },
+    "t-long": {
+      "type": "testimonial",
+      "settings": {
+        "testimonial": "long-quote-no-rating",
+        "heading": "Long quote, no rating",
+        "background": "orange",
+        "show_decorations": true,
+        "padding_top": 0,
+        "padding_bottom": 112
+      }
+    },
+    "t-anon": {
+      "type": "testimonial",
+      "settings": {
+        "testimonial": "anonymous",
+        "heading": "No attribution",
+        "background": "orange",
+        "show_decorations": true,
+        "padding_top": 0,
+        "padding_bottom": 112
+      }
+    }
+  },
+  "order": [
+    "t-default",
+    "t-short",
+    "t-long",
+    "t-anon"
+  ]
+}

@@ -1,0 +1,17 @@
+<div
+  class="flex items-center justify-center gap-[3px] md:gap-[5px]"
+  role="img"
+  aria-label="{{ 'sections.testimonial.rating' | t: rating: rating, max: 5 }}"
+>
+  {%- for star in (1..5) -%}
+    <img
+      class="block w-[22px] md:w-[32px]{% if forloop.index > rating %} opacity-25{% endif %}"
+      src="{{ 'testimonial-star.svg' | asset_url }}"
+      alt=""
+      width="19"
+      height="18"
+      loading="lazy"
+      aria-hidden="true"
+    >
+  {%- endfor -%}
+</div>
