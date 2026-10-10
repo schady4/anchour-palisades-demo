@@ -92,7 +92,7 @@
           {%- endform -%}
 
           {%- if s.newsletter_disclaimer != blank -%}
-            <div class="font-body text-body-xs max-w-[294px] [&_a]:text-inherit [&_a]:underline [&_a]:underline-offset-2 max-md:[&_a]:py-3 xl:max-w-[500px]">
+            <div class="font-body text-body-xs max-w-[294px] [&_a]:text-inherit [&_a]:underline [&_a]:underline-offset-2 [&_a:focus-visible]:outline-shore [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-2 max-md:[&_a]:py-3 xl:max-w-[500px]">
               {{ s.newsletter_disclaimer }}
             </div>
           {%- endif -%}

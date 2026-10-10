@@ -42,51 +42,51 @@ test.describe('footer accessibility', () => {
     }
   });
 
-  test('shows a visible focus ring on every interactive element', async ({
-    page,
-  }) => {
-    const targets = page.locator('footer a, footer button, footer input');
-    const count = Math.min(await targets.count(), 12);
+  test('gives every interactive element a visible focus ring', async ({page}) => {
+    const expected = await page.evaluate(() => {
+      const els = [
+        ...document.querySelectorAll('footer a[href], footer button, footer input'),
+      ];
+      els.forEach((el, i) => el.setAttribute('data-focus-audit', String(i)));
 
-    for (let i = 0; i < count; i++) {
-      const el = targets.nth(i);
-      if (!(await el.isVisible())) continue;
-      await el.focus();
+      return els
+        .filter(
+          (el) =>
+            el.type !== 'hidden' &&
+            !el.closest('[inert]') &&
+            el.tabIndex >= 0 &&
+            el.getBoundingClientRect().width > 0,
+        )
+        .map((el) => el.dataset.focusAudit);
+    });
 
-      const outline = await el.evaluate((node) => {
-        const s = getComputedStyle(node);
-        return {width: s.outlineWidth, style: s.outlineStyle};
-      });
-      expect(outline.style).not.toBe('none');
-      expect(parseFloat(outline.width)).toBeGreaterThan(0);
-    }
-  });
+    expect(expected.length).toBeGreaterThan(5);
 
-  test('shows a focus ring on every keyboard-reachable element', async ({
-    page,
-  }) => {
-    await page.setViewportSize({width: 390, height: 844});
-    await page.goto('/');
-
-    const missing = [];
-    for (let i = 0; i < 70; i++) {
+    const seen = new Map();
+    for (let i = 0; i < 200 && seen.size < expected.length; i++) {
       await page.keyboard.press('Tab');
-      const info = await page.evaluate(() => {
+      const hit = await page.evaluate(() => {
         const el = document.activeElement;
-        if (!el || !el.closest('footer')) return null;
-        const s = getComputedStyle(el);
+        if (!el || el.dataset?.focusAudit === undefined) return null;
+        const style = getComputedStyle(el);
         return {
-          label: `${el.tagName}"${(el.textContent || '').trim().slice(0, 20)}"`,
-          width: parseFloat(s.outlineWidth),
-          style: s.outlineStyle,
+          id: el.dataset.focusAudit,
+          ring:
+            style.outlineStyle === 'solid' &&
+            parseFloat(style.outlineWidth) >= 2,
+          label: `${el.tagName}"${(el.textContent || el.name || '')
+            .trim()
+            .slice(0, 24)}"`,
         };
       });
-      if (info && (info.style === 'none' || info.width === 0)) {
-        missing.push(info.label);
-      }
+      if (hit) seen.set(hit.id, hit);
     }
 
-    expect(missing, `no focus ring on: ${missing.join(', ')}`).toEqual([]);
+    const unreached = expected.filter((id) => !seen.has(id));
+    expect(unreached, `${unreached.length} element(s) never reached`).toEqual([]);
+
+    const ringless = [...seen.values()].filter((v) => !v.ring).map((v) => v.label);
+    expect(ringless, `no focus ring on: ${ringless.join(', ')}`).toEqual([]);
   });
 
   test('meets 44x44 tap targets at phone width', async ({page}) => {
