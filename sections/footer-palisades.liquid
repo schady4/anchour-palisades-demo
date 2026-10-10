@@ -1,0 +1,449 @@
+{%- liquid
+  assign s = section.settings
+  assign link_columns = section.blocks | where: 'type', 'link_column'
+  assign social_links = section.blocks | where: 'type', 'social_link'
+-%}
+
+<footer
+  class="bg-neighborhood text-forest rounded-t-panel xl:rounded-t-panel-lg px-6 py-9 md:px-10 xl:px-gutter xl:pt-15 xl:pb-12"
+  {{ section.shopify_attributes }}
+>
+  <noscript>
+    <style>
+      .footer-panel { display: grid !important; }
+      .footer-panel-collapse { max-height: none !important; }
+      .footer-accordion-icon { display: none !important; }
+    </style>
+  </noscript>
+
+  <div class="mx-auto w-full max-w-site">
+    {%- if s.newsletter_heading != blank or s.newsletter_description != blank -%}
+      <section
+        class="bg-forest rounded-panel xl:rounded-panel-lg grid gap-6 px-6 py-9 text-white xl:grid-cols-[minmax(0,573px)_minmax(0,594px)] xl:justify-between xl:gap-10 xl:px-15 xl:py-15"
+        aria-labelledby="newsletter-heading-{{ section.id }}"
+      >
+        <div class="grid gap-4">
+          {%- if s.newsletter_heading != blank -%}
+            <h2
+              id="newsletter-heading-{{ section.id }}"
+              class="font-display text-heading-s-m xl:text-heading-s font-medium"
+            >
+              {{ s.newsletter_heading }}
+            </h2>
+          {%- endif -%}
+          {%- if s.newsletter_description != blank -%}
+            <p class="font-body text-body-md-m xl:text-body-md">
+              {{ s.newsletter_description }}
+            </p>
+          {%- endif -%}
+        </div>
+
+        <div class="grid gap-4">
+          {%- form 'customer', class: 'grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-4' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+
+            <div class="grid gap-3">
+              <label
+                class="sr-only"
+                for="newsletter-email-{{ section.id }}"
+              >
+                {{ s.newsletter_label | default: 'Email address' }}
+              </label>
+              <input
+                id="newsletter-email-{{ section.id }}"
+                class="bg-shore text-char font-body focus-visible:outline-shore h-12.5 w-full rounded-field px-6 text-base placeholder:text-char focus-visible:outline-2 focus-visible:outline-offset-2 xl:h-15"
+                type="email"
+                name="contact[email]"
+                value="{{ form.email }}"
+                placeholder="{{ s.newsletter_placeholder }}"
+                autocomplete="email"
+                required
+                {% if form.errors %}
+                  aria-invalid="true"
+                  aria-describedby="newsletter-error-{{ section.id }}"
+                {% endif %}
+              >
+            </div>
+
+            <button
+              class="bg-local-orange text-char font-display text-button focus-visible:outline-shore tap-target h-12.5 cursor-pointer rounded-lg px-6 font-semibold transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 xl:h-15 xl:rounded-field xl:px-8"
+              type="submit"
+            >
+              {{ s.newsletter_button_label }}
+            </button>
+
+            {%- if form.errors -%}
+              <p
+                id="newsletter-error-{{ section.id }}"
+                class="font-body text-body-xs text-local-orange md:col-span-2"
+                role="alert"
+              >
+                {{ form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email }}
+              </p>
+            {%- elsif form.posted_successfully? -%}
+              <p
+                class="font-body text-body-xs md:col-span-2"
+                role="status"
+              >
+                {{ 'general.newsletter.confirmation' | t }}
+              </p>
+            {%- endif -%}
+          {%- endform -%}
+
+          {%- if s.newsletter_disclaimer != blank -%}
+            <div class="font-body text-body-xs max-w-[294px] [&_a]:text-inherit [&_a]:underline [&_a]:underline-offset-2 max-md:[&_a]:py-3 xl:max-w-[500px]">
+              {{ s.newsletter_disclaimer }}
+            </div>
+          {%- endif -%}
+        </div>
+      </section>
+    {%- endif -%}
+
+    <div class="mt-13 grid gap-9 md:grid-cols-3 md:items-start lg:grid-cols-4 xl:mt-15 xl:grid-cols-6">
+      {%- if link_columns.size > 0 -%}
+        <nav
+          class="grid gap-8 md:col-span-2 md:grid-cols-2 md:items-start md:gap-9 lg:col-span-3 lg:grid-cols-3 xl:col-span-5 xl:grid-cols-5"
+          aria-label="{{ s.nav_label | default: 'Footer' }}"
+          x-data="{ open: {% if link_columns.first %}'{{ link_columns.first.id }}'{% else %}null{% endif %} }"
+        >
+          {%- for block in link_columns -%}
+            {%- liquid
+              assign links = block.settings.menu.links
+              assign panel_id = 'footer-panel-' | append: block.id
+              assign rows = links.size | plus: 1 | divided_by: 2
+            -%}
+            {%- if block.settings.heading != blank and links.size > 0 -%}
+              <div {{ block.shopify_attributes }}>
+                <h2 class="font-display text-heading-xs-m xl:text-heading-xxs font-medium xl:leading-tight">
+                  <button
+                    class="focus-visible:outline-forest tap-target flex w-full cursor-pointer items-center justify-between gap-4 text-left focus-visible:outline-2 focus-visible:outline-offset-4 md:cursor-default md:pointer-events-none md:py-0"
+                    type="button"
+                    aria-controls="{{ panel_id }}"
+                    aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                    x-effect="$store.viewport.desktop ? $el.removeAttribute('aria-expanded') : $el.setAttribute('aria-expanded', open === '{{ block.id }}')"
+                    x-bind:tabindex="$store.viewport.desktop ? -1 : 0"
+                    x-on:click="open = (open === '{{ block.id }}' ? null : '{{ block.id }}')"
+                  >
+                    <span>{{ block.settings.heading }}</span>
+                    <span
+                      class="footer-accordion-icon shrink-0 transition-transform duration-200 md:hidden"
+                      x-bind:class="open === '{{ block.id }}' && 'rotate-180'"
+                      aria-hidden="true"
+                    >
+                      {% render 'icon-chevron' %}
+                    </span>
+                  </button>
+                </h2>
+
+                <div
+                  class="footer-panel-collapse overflow-hidden transition-[max-height] duration-300 ease-out motion-reduce:transition-none"
+                  {%- unless forloop.first %} x-cloak{% endunless %}
+                  x-effect="window.footerPanelSync($el, open === '{{ block.id }}', $store.viewport.desktop)"
+                  x-bind:inert="!$store.viewport.desktop && open !== '{{ block.id }}'"
+                >
+                  <div>
+                    <ul
+                      id="{{ panel_id }}"
+                      class="footer-panel font-body text-body-xs mt-6 grid gap-4 max-md:grid-flow-col max-md:grid-cols-2 max-md:[grid-template-rows:repeat(var(--footer-rows),auto)] md:mt-4 md:grid-cols-1"
+                      style="--footer-rows: {{ rows }};"
+                    >
+                      {%- for link in links -%}
+                        <li>
+                          <a
+                            class="focus-visible:outline-forest tap-target inline-flex items-center hover:text-forest-hover hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 md:min-h-0"
+                            href="{{ link.url }}"
+                            {% if link.current %}
+                              aria-current="page"
+                            {% endif %}
+                          >
+                            {{ link.title }}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </nav>
+      {%- endif -%}
+
+      <section
+        class="grid justify-items-center gap-4 border-y border-white/10 py-9 text-center md:justify-items-end md:gap-8 md:border-0 md:py-0 md:text-right"
+        aria-label="{{ s.contact_label | default: 'Contact' }}"
+      >
+        {%- if s.contact_heading != blank or s.contact_phone != blank -%}
+          <p class="font-display text-prompt-m xl:text-heading-xxs font-medium">
+            {%- if s.contact_heading != blank -%}
+              <span class="max-md:block">{{ s.contact_heading }}</span>
+              {{ ' ' }}
+            {%- endif -%}
+            {%- if s.contact_phone != blank -%}
+              <a
+                class="focus-visible:outline-forest tap-target inline-flex items-center underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-4 md:no-underline"
+                href="tel:{{ s.contact_phone | remove: ' ' | remove: '-' | remove: '(' | remove: ')' }}"
+              >
+                {{ s.contact_phone }}
+              </a>
+            {%- endif -%}
+          </p>
+        {%- endif -%}
+
+        {%- if s.routing_number != blank or s.nmls_number != blank -%}
+          <div class="font-display text-body-xs grid gap-2 font-semibold">
+            {%- if s.routing_number != blank -%}<span>{{ s.routing_number }}</span>{%- endif -%}
+            {%- if s.nmls_number != blank -%}<span>{{ s.nmls_number }}</span>{%- endif -%}
+          </div>
+        {%- endif -%}
+
+        {%- if social_links.size > 0 -%}
+          <ul class="mt-5 flex items-center justify-center gap-6 md:mt-0 md:justify-end md:gap-4">
+            {%- for block in social_links -%}
+              <li {{ block.shopify_attributes }}>
+                <a
+                  class="focus-visible:outline-forest inline-flex items-center justify-center rounded-full transition hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-4"
+                  href="{{ block.settings.url | default: '#' }}"
+                  {% if block.settings.url != blank %}
+                    rel="noopener"
+                    target="_blank"
+                  {% endif %}
+                >
+                  {% render 'icon-social', platform: block.settings.platform %}
+                  <span class="sr-only">
+                    {{- block.settings.label | default: block.settings.platform -}}
+                  </span>
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </section>
+    </div>
+
+    <div class="mt-9 grid justify-items-center md:grid-cols-[auto_minmax(0,1fr)] md:items-end md:gap-x-10 xl:mt-20">
+      {% render 'footer-logo', image: s.logo, width: s.logo_width, alt: shop.name %}
+
+      <div class="font-body text-body-xs mt-9 grid w-full justify-items-center gap-4 border-t border-white/10 py-6 opacity-60 md:mt-0 md:flex md:w-auto md:flex-wrap md:items-center md:justify-end md:justify-self-end md:gap-x-6 md:gap-y-3 md:border-0 md:py-0 md:opacity-100 xl:gap-x-10">
+        <p class="order-2 text-center md:order-none">
+          {%- if s.copyright != blank -%}
+            {{ s.copyright }}
+          {%- else -%}
+            &copy;{{ 'now' | date: '%Y' }} {{ shop.name }}
+          {%- endif -%}
+        </p>
+
+        {%- if s.legal_menu != blank -%}
+          <ul class="grid grid-cols-2 justify-center gap-x-6 gap-y-2 text-center md:flex md:whitespace-nowrap md:flex-wrap md:justify-end md:gap-x-6 md:gap-y-3 xl:gap-x-10">
+            {%- for link in s.legal_menu.links -%}
+              <li>
+                <a
+                  class="focus-visible:outline-forest tap-target inline-flex items-center hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 md:min-h-0"
+                  href="{{ link.url }}"
+                >
+                  {{ link.title }}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "footer-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Newsletter panel"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Heading",
+      "default": "Stay in the loop"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_description",
+      "label": "Description",
+      "default": "Get the latest updates, tips, and member perks delivered to your inbox. No spam—just the good stuff from your local credit union."
+    },
+    {
+      "type": "text",
+      "id": "newsletter_label",
+      "label": "Email field label",
+      "info": "Read by screen readers only. The visible prompt is the placeholder below.",
+      "default": "Email address"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_placeholder",
+      "label": "Email field placeholder",
+      "default": "Your Email"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_button_label",
+      "label": "Button label",
+      "default": "Sign up"
+    },
+    {
+      "type": "richtext",
+      "id": "newsletter_disclaimer",
+      "label": "Disclaimer",
+      "info": "Shown under the form. Link your privacy policy here.",
+      "default": "<p>Unsubscribe any time. See our Privacy Policy for more information.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Contact"
+    },
+    {
+      "type": "text",
+      "id": "contact_heading",
+      "label": "Contact prompt",
+      "info": "Sits above the phone number on mobile, inline with it on desktop.",
+      "default": "Questions? Call us:"
+    },
+    {
+      "type": "text",
+      "id": "contact_phone",
+      "label": "Phone number",
+      "default": "800-438-7415"
+    },
+    {
+      "type": "text",
+      "id": "routing_number",
+      "label": "Routing number",
+      "default": "Routing #221979101"
+    },
+    {
+      "type": "text",
+      "id": "nmls_number",
+      "label": "NMLS number",
+      "default": "Company NMLS #784941"
+    },
+    {
+      "type": "header",
+      "content": "Logo and legal"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Footer logo",
+      "info": "Falls back to the bundled Palisades logo if left empty."
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width on desktop",
+      "unit": "px",
+      "min": 280,
+      "max": 440,
+      "step": 2,
+      "default": 366
+    },
+    {
+      "type": "link_list",
+      "id": "legal_menu",
+      "label": "Legal menu",
+      "info": "Privacy, accessibility, disclaimers. Managed in Online Store → Navigation."
+    },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Copyright line",
+      "info": "Leave empty to show the current year and your store name."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_column",
+      "name": "Link column",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Column heading",
+          "default": "Bank"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "info": "Pick a navigation menu. Its links become this column. Create menus in Online Store → Navigation."
+        }
+      ]
+    },
+    {
+      "type": "social_link",
+      "name": "Social link",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "select",
+          "id": "platform",
+          "label": "Platform",
+          "options": [
+            { "value": "facebook", "label": "Facebook" },
+            { "value": "instagram", "label": "Instagram" },
+            { "value": "x", "label": "X" }
+          ],
+          "default": "facebook"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Accessible name",
+          "info": "Read by screen readers, e.g. “Palisades Credit Union on Facebook”."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        { "type": "link_column", "settings": { "heading": "Bank" } },
+        { "type": "link_column", "settings": { "heading": "Borrow" } },
+        { "type": "link_column", "settings": { "heading": "Services" } },
+        { "type": "link_column", "settings": { "heading": "About" } },
+        { "type": "link_column", "settings": { "heading": "Resources" } },
+        {
+          "type": "social_link",
+          "settings": {
+            "platform": "facebook",
+            "label": "Palisades Credit Union on Facebook"
+          }
+        },
+        {
+          "type": "social_link",
+          "settings": {
+            "platform": "instagram",
+            "label": "Palisades Credit Union on Instagram"
+          }
+        },
+        {
+          "type": "social_link",
+          "settings": {
+            "platform": "x",
+            "label": "Palisades Credit Union on X"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

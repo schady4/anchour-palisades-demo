@@ -1,0 +1,98 @@
+{
+  "name": "Footer",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer-palisades",
+      "blocks": {
+        "bank": {
+          "type": "link_column",
+          "settings": {
+            "heading": "Bank",
+            "menu": "footer-bank"
+          }
+        },
+        "borrow": {
+          "type": "link_column",
+          "settings": {
+            "heading": "Borrow",
+            "menu": "borrow"
+          }
+        },
+        "services": {
+          "type": "link_column",
+          "settings": {
+            "heading": "Services",
+            "menu": "services"
+          }
+        },
+        "about": {
+          "type": "link_column",
+          "settings": {
+            "heading": "About",
+            "menu": "about"
+          }
+        },
+        "resources": {
+          "type": "link_column",
+          "settings": {
+            "heading": "Resources",
+            "menu": "resources"
+          }
+        },
+        "social_facebook": {
+          "type": "social_link",
+          "settings": {
+            "platform": "facebook",
+            "url": "#",
+            "label": "Palisades Credit Union on Facebook"
+          }
+        },
+        "social_instagram": {
+          "type": "social_link",
+          "settings": {
+            "platform": "instagram",
+            "url": "#",
+            "label": "Palisades Credit Union on Instagram"
+          }
+        },
+        "social_x": {
+          "type": "social_link",
+          "settings": {
+            "platform": "x",
+            "url": "#",
+            "label": "Palisades Credit Union on X"
+          }
+        }
+      },
+      "block_order": [
+        "bank",
+        "borrow",
+        "services",
+        "about",
+        "resources",
+        "social_facebook",
+        "social_instagram",
+        "social_x"
+      ],
+      "settings": {
+        "newsletter_heading": "Stay in the loop",
+        "newsletter_description": "Get the latest updates, tips, and member perks delivered to your inbox. No spam—just the good stuff from your local credit union.",
+        "newsletter_label": "Email address",
+        "newsletter_placeholder": "Your Email",
+        "newsletter_button_label": "Sign up",
+        "newsletter_disclaimer": "<p>Unsubscribe any time. See our <a href=\"/policies/privacy-policy\">Privacy Policy</a> for more information.</p>",
+        "contact_heading": "Questions? Call us:",
+        "contact_phone": "800-438-7415",
+        "routing_number": "Routing #221979101",
+        "nmls_number": "Company NMLS #784941",
+        "logo_width": 366,
+        "legal_menu": "legal",
+        "copyright": "©2025 Palisades Credit Union"
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

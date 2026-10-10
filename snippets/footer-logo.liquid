@@ -1,0 +1,39 @@
+{%- liquid
+  assign desktop_width = width | default: 366
+  assign mobile_width = 304
+  assign retina_width = desktop_width | times: 2
+  assign sizes = '(min-width: 1280px) ' | append: desktop_width | append: 'px, ' | append: mobile_width | append: 'px'
+  assign widths = mobile_width | append: ', ' | append: desktop_width | append: ', ' | append: retina_width
+-%}
+
+<div
+  class="w-full max-w-[19rem] xl:w-(--footer-logo-w) xl:max-w-full"
+  style="--footer-logo-w: {{ desktop_width }}px;"
+>
+  {%- if image != blank and image.media_type == 'image' -%}
+    {%- liquid
+      assign render_height = desktop_width | divided_by: image.aspect_ratio | round
+    -%}
+    {{
+      image
+      | image_url: width: retina_width
+      | image_tag:
+        widths: widths,
+        sizes: sizes,
+        width: desktop_width,
+        height: render_height,
+        alt: alt,
+        class: 'block h-auto w-full',
+        loading: 'lazy'
+    }}
+  {%- else -%}
+    <img
+      class="block h-auto w-full"
+      src="{{ 'palisades-logo.svg' | asset_url }}"
+      alt="{{ alt | escape }}"
+      width="366"
+      height="85"
+      loading="lazy"
+    >
+  {%- endif -%}
+</div>
