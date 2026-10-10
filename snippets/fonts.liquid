@@ -1,0 +1,25 @@
+{%- liquid
+  assign display_font = 'hanken-grotesk-variable.woff2' | asset_url
+  assign body_font = 'inter-variable.woff2' | asset_url
+-%}
+
+{{ body_font | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+{{ display_font | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+
+<style>
+  @font-face {
+    font-family: 'Hanken Grotesk';
+    src: url('{{ display_font }}') format('woff2-variations');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Inter';
+    src: url('{{ body_font }}') format('woff2-variations');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+</style>

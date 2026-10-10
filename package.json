@@ -1,0 +1,30 @@
+{
+  "name": "palisades-theme",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Palisades Credit Union \u2014 Shopify theme sections built from Figma",
+  "scripts": {
+    "css": "tailwindcss -i ./src/styles/main.css -o ./assets/theme.css",
+    "css:build": "npm run css -- --minify",
+    "css:watch": "npm run css -- --watch",
+    "dev": "npm-run-all --parallel css:watch theme:dev",
+    "theme:dev": "shopify theme dev --store $SHOPIFY_STORE",
+    "build": "npm run css:build",
+    "vendor": "node ./scripts/vendor-alpine.mjs",
+    "postinstall": "npm run vendor",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "jest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@shopify/cli": "^4.8.5",
+    "@tailwindcss/cli": "4.3.3",
+    "alpinejs": "3.17.4",
+    "jest": "^30.5.2",
+    "jest-environment-jsdom": "^30.5.2",
+    "npm-run-all": "4.1.5",
+    "tailwindcss": "4.3.3"
+  }
+}

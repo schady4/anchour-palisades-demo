@@ -1,0 +1,5 @@
+[environments.development]
+store = "test-store-srdacbik.myshopify.com"
+
+[environments.production]
+store = "test-store-srdacbik.myshopify.com"

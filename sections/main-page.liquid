@@ -1,0 +1,17 @@
+<div class="mx-auto max-w-site px-6 py-12 md:px-10 xl:px-gutter">
+  <h1 class="font-display text-heading-s text-forest font-medium">{{ page.title }}</h1>
+  <div class="font-body text-body-md mt-6">{{ page.content }}</div>
+</div>
+
+{% schema %}
+{
+  "name": "Page content",
+  "tag": "section",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Page content"
+    }
+  ]
+}
+{% endschema %}

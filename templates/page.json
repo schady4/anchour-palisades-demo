@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page"
+    },
+    "testimonial": {
+      "type": "testimonial",
+      "settings": {
+        "heading": "From our community",
+        "background": "orange",
+        "show_decorations": true
+      }
+    }
+  },
+  "order": ["main", "testimonial"]
+}
